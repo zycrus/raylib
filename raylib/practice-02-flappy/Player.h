@@ -6,10 +6,7 @@ class Player
 private:
 	float gravity = 1000.0f;
 
-	bool OnCollideGround()
-	{
-		return pos.y + rect.height + vSpeed * GetFrameTime() > GetScreenHeight();
-	}
+	
 
 public:
 	Vector2 pos;
@@ -18,25 +15,41 @@ public:
 	Rectangle rect;
 	bool scored = false;
 	bool isAlive = true;
+	bool playDeathSound = false;
+	bool OnCollideGround()
+	{
+		return pos.y + rect.height + vSpeed * GetFrameTime() > GetScreenHeight();
+	}
+	bool OnCollideSky()
+	{
+		return pos.y + vSpeed * GetFrameTime() < 0;
+	}
+
+	Sound jumpSound;
+	Sound bumpSound;
+	Sound scoreSound;
 
 	void Start()
 	{
 		jumpHeight = 400.0f;
-		pos = { (float)GetScreenWidth() / 3, (float)GetScreenHeight() / 3 };
+		pos = { (float)GetScreenWidth() / 3, (float)GetScreenHeight() / 2 };
 		vSpeed = 0.0f;
 		scored = false;
 		isAlive = true;
+		playDeathSound = false;
 	}
 
 	void Update()
 	{
 		if (!OnCollideGround())
+		{
 			pos.y += vSpeed * GetFrameTime();
 			vSpeed += gravity * GetFrameTime();
+		}
 			
 		rect = { pos.x, pos.y, 50, 45 };
 
-		if (isAlive && IsKeyPressed(KEY_SPACE))
+		if (!OnCollideSky() && isAlive && (IsKeyPressed(KEY_SPACE) || IsMouseButtonPressed(0)))
 		{
 			Jump();
 		}
@@ -52,5 +65,6 @@ public:
 	void Jump()
 	{
 		vSpeed = -jumpHeight;
+		PlaySound(jumpSound);
 	}
 };
