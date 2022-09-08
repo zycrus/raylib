@@ -55,7 +55,10 @@ void Update()
 	if (player.CheckGroundCollision(ground.collider))
 	{
 		player.isGrounded = true;
-		player.pos.y = ground.pos.y - player.height;
+		if (player.pos.y + player.height <= ground.pos.y)
+		{
+			player.pos.y = ground.pos.y - player.height;
+		}
 	}
 }
 
