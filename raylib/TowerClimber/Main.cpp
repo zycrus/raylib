@@ -1,17 +1,10 @@
 #include "raylib.h"
-
-#include "Player.h"
 #include "Ground.h"
 
 // FUNCTIONS
 void Update(void);
 void Draw(void);
 void UpdateDrawFrame(void);
-
-// OBJECTS
-Player player;
-Ground ground;
-Ground ground2;
 
 int main()
 {
@@ -20,16 +13,6 @@ int main()
 
 	SetTargetFPS(60);
 	InitWindow(screenWidth, screenHeight, "Tower Climber");
-
-	player.pos = { screenWidth/2, screenHeight / 2 };
-	ground.pos = { 20, screenHeight - 100 };
-	ground.width = 420;
-	ground.height = 50;
-	ground.Start();
-	ground2.pos = { 50, screenHeight - 150 };
-	ground2.width = 50;
-	ground2.height = 20;
-	ground2.Start();
 
 	while (!WindowShouldClose())
 	{
@@ -51,15 +34,6 @@ void UpdateDrawFrame()
 
 void Update()
 {
-	player.Update();
-	if (player.CheckGroundCollision(ground.collider))
-	{
-		player.isGrounded = true;
-		if (player.pos.y + player.height <= ground.pos.y)
-		{
-			player.pos.y = ground.pos.y - player.height;
-		}
-	}
 }
 
 void Draw()
@@ -70,10 +44,6 @@ void Draw()
 	int _screenHeight = GetScreenHeight();
 	int centerX = _screenWidth / 2;
 	int centerY = _screenHeight / 2;
-
-	player.Draw();
-	ground.Draw();
-	ground2.Draw();
 
 	DrawFPS(10, 10);
 }

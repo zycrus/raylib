@@ -1,29 +1,10 @@
-#include "raylib.h"
+#include "GameObject.h"
 
-#pragma once
-class Ground
+class Ground : public GameObject
 {
 public:
-	Vector2 pos = { 0, 0 };
-	int width = 0;
-	int height = 0;
-	const char* tag = "Ground";
-
-	Rectangle collider;
-
-	void Start()
-	{
-		collider = { pos.x, pos.y, (float)width, (float)height };
-	}
-
-	void Update()
-	{
-
-	}
-
-	void Draw()
-	{
-		DrawRectangleRec(collider, GRAY);
-	}
+	Ground()
+		: GameObject("Ground") {}
+	Ground(Vector2 pos, Vector2 size)
+		: GameObject(pos, size, "Ground") {}
 };
-
