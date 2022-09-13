@@ -1,10 +1,24 @@
 #include "raylib.h"
-#include "Ground.h"
+
+#include "InstanceManager.h"
 
 // FUNCTIONS
-void Update(void);
-void Draw(void);
-void UpdateDrawFrame(void);
+void Update();
+void Draw();
+void UpdateDrawFrame();
+void InitLevel();
+
+// Initialize Instance Manager
+InstanceManager instances;
+
+void InitLevel() {
+	float _screenWidth = (float)GetScreenWidth();
+	float _screenHeight = (float)GetScreenHeight();
+
+	instances.CreateGround({ 200, _screenHeight - 500 }, { 100, 20 }, GRAY, "g2");
+	instances.CreateGround({ 200, _screenHeight - 200 }, { 100, 20 }, GRAY, "g2");
+	instances.CreateGround({ 10, _screenHeight - 50 }, { _screenWidth - 20, 40 }, GRAY, "g1");
+}
 
 int main()
 {
@@ -13,6 +27,8 @@ int main()
 
 	SetTargetFPS(60);
 	InitWindow(screenWidth, screenHeight, "Tower Climber");
+
+	InitLevel();
 
 	while (!WindowShouldClose())
 	{
@@ -34,16 +50,14 @@ void UpdateDrawFrame()
 
 void Update()
 {
+	instances.Update();
 }
 
 void Draw()
 {
 	ClearBackground(WHITE);
 
-	int _screenWidth = GetScreenWidth();
-	int _screenHeight = GetScreenHeight();
-	int centerX = _screenWidth / 2;
-	int centerY = _screenHeight / 2;
+	instances.Draw();
 
 	DrawFPS(10, 10);
 }
