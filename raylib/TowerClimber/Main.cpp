@@ -7,6 +7,7 @@ void Update();
 void Draw();
 void UpdateDrawFrame();
 void InitLevel();
+void GeneratePlatforms(int);
 
 // Initialize Instance Manager
 InstanceManager instances;
@@ -15,9 +16,22 @@ void InitLevel() {
 	float _screenWidth = (float)GetScreenWidth();
 	float _screenHeight = (float)GetScreenHeight();
 
-	instances.CreateGround({ 200, _screenHeight - 500 }, { 100, 20 }, GRAY, "g2");
-	instances.CreateGround({ 200, _screenHeight - 200 }, { 100, 20 }, GRAY, "g2");
-	instances.CreateGround({ 10, _screenHeight - 50 }, { _screenWidth - 20, 40 }, GRAY, "g1");
+	instances.player = new Player({ _screenWidth / 2, _screenHeight - 82 }, { 25, 31 }, SKYBLUE);
+	instances.CreateGround({ 10, _screenHeight - 50 }, { _screenWidth - 20, 40 }, GRAY);
+
+	for (int ypos = (int)_screenHeight - 150; ypos > 0; ypos -= 100)
+	{
+		GeneratePlatforms(ypos);
+	}
+}
+
+void GeneratePlatforms(int ypos)
+{
+	int _screenWidth = GetScreenWidth();
+	int _screenHeight = GetScreenHeight();
+	int width = GetRandomValue(50, 150);
+	Vector2 pos = { (float)GetRandomValue(0, GetScreenWidth() - width), (float)ypos };
+	instances.CreateGround(pos, { (float)width, 20 }, GRAY);
 }
 
 int main()

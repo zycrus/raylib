@@ -1,42 +1,41 @@
+#pragma once
 #include "Ground.h"
 #include "Player.h"
 #include <vector>
 
-#pragma once
-
 class InstanceManager {
-	std::vector<Ground*> ground_array;
+	std::vector<Ground*> groundArray;
 
 public:
-	Player* player = new Player({ 100, 100 }, { 25, 31 }, SKYBLUE);
+	Player* player;
 
-	void CreateGround(Vector2 pos, Vector2 size, Color color, const char* id)
+	void CreateGround(Vector2 pos, Vector2 size, Color color)
 	{
-		ground_array.push_back(new Ground(pos, size, color, id));
+		groundArray.push_back(new Ground(pos, size, color));
+		player->groundArray = groundArray;
 	}
 
 	void Update()
 	{
 		player->Update();
-		for (size_t i = 0; i < ground_array.size(); ++i)
+		for (size_t i = 0; i < groundArray.size(); ++i)
 		{
-			ground_array[i]->Update();
-			player->CheckCollision(ground_array[i]);
+			groundArray[i]->Update();
 		}
 	}
 
 	void Draw()
 	{
-		for (size_t i = 0; i < ground_array.size(); ++i)
+		for (size_t i = 0; i < groundArray.size(); ++i)
 		{
-			ground_array[i]->Draw();
+			groundArray[i]->Draw();
 		}
 		player->Draw();
 	}
 
 	void Clear()
 	{
-		ground_array.clear();
+		groundArray.clear();
 		delete player;
 	}
 };

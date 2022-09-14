@@ -1,5 +1,7 @@
 #pragma once
 #include "GameObject.h"
+#include "Ground.h"
+#include <vector>
 
 class Player : public GameObject
 {
@@ -7,11 +9,13 @@ private:
 	float gravity = 9.8f;
 	float speed = 10.0f;
 	float jumpHeight = 8.0f;
+	bool gameStarted = false;
 
 public:
 	Vector2 vel;
 	bool isGrounded = false;
 	float direction = 1.0f;
+	std::vector<Ground*> groundArray;
 
 	Player()
 		: GameObject("Player") {}
@@ -20,9 +24,14 @@ public:
 		groundCollider = { pos.x + 0.01f, pos.y + size.y, size.x - 0.02f, 1.0f };
 	}
 
+	void CopyGroundArray(std::vector<Ground*> _groundArray)
+	{
+		groundArray = _groundArray;
+	}
+
 	void Update()
 	{
-		if (!isGrounded)
+		if (!IsCollidingWithGround())
 		{
 			vel.y += gravity * GetFrameTime();
 		}
@@ -112,28 +121,38 @@ public:
 
 	void Jump()
 	{
-		if (IsKeyDown(KEY_SPACE) && isGrounded)
+		if (IsKeyDown(KEY_SPACE) && IsCollidingWithGround())
 		{
+			if (!gameStarted)
+			{
+				for (size_t i = 0; i < groundArray.size(); ++i)
+				{
+					groundArray[i]->StartMove();
+					gameStarted = true;
+				}
+			}
 			vel.y = -jumpHeight;
-			isGrounded = false;
 		}
 	}
 
-	void CheckCollision(GameObject* other)
+	bool IsCollidingWithGround()
 	{
-		if (CheckCollisionRecs(groundCollider, other->rect))
+		for (size_t i = 0; i < groundArray.size(); ++i)
 		{
-			if (other->tag == "Ground")
+			if (CheckCollisionRecs(groundCollider, groundArray[i]->groundCollider))
 			{
-				isGrounded = true;
-				vel.y = 0;
-				pos.y = other->rect.y - size.y;
+				if (groundArray[i]->tag == "Ground")
+				{
+					if (vel.y > 0.0f)
+					{
+						vel.y = groundArray[i]->vel.y;
+						pos.y = groundArray[i]->rect.y - size.y;
+						return true;
+					}
+				}
 			}
 		}
-		else
-		{
-			isGrounded = false;
-		}
+		return false;
 	}
 };
 
