@@ -15,22 +15,41 @@ public:
 		player->groundArray = groundArray;
 	}
 
+	bool IsGroundOut(Ground* ground)
+	{
+		if (ground->pos.y > GetScreenHeight())
+		{
+			return true;
+		}
+		return false;
+	}
+
+	void ReloadPlatform(Ground* ground)
+	{
+		ground->pos.y = 0;
+		ground->size.y = 20;
+		ground->size.x = GetRandomValue(50, 150);
+		ground->pos.x = (float)GetRandomValue(0, GetScreenWidth() - ground->size.x);
+	}
+
 	void Update()
 	{
 		player->Update();
+		player->Draw();
 		for (size_t i = 0; i < groundArray.size(); ++i)
 		{
 			groundArray[i]->Update();
+			groundArray[i]->Draw();
+			if (IsGroundOut(groundArray[i]))
+			{
+				ReloadPlatform(groundArray[i]);
+			}
 		}
 	}
 
 	void Draw()
 	{
-		for (size_t i = 0; i < groundArray.size(); ++i)
-		{
-			groundArray[i]->Draw();
-		}
-		player->Draw();
+		return;
 	}
 
 	void Clear()

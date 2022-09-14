@@ -22,7 +22,7 @@ public:
 
 	void StartMove()
 	{
-		vel.y = 0.5f;
+		vel.y = 0.8f;
 	}
 
 	void Draw()

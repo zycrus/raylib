@@ -8,7 +8,7 @@ class Player : public GameObject
 private:
 	float gravity = 9.8f;
 	float speed = 10.0f;
-	float jumpHeight = 8.0f;
+	float jumpHeight = 6.5f;
 	bool gameStarted = false;
 
 public:
@@ -35,10 +35,6 @@ public:
 		{
 			vel.y += gravity * GetFrameTime();
 		}
-		else
-		{
-			vel.y = 0;
-		}
 
 		MoveHorizontal();
 		Jump();
@@ -48,6 +44,7 @@ public:
 		groundCollider.x = pos.x - 0.01f;
 		groundCollider.y = pos.y + size.y;
 		rect = { pos.x, pos.y, size.x, size.y };
+
 	}
 
 	void MoveHorizontal()
@@ -139,6 +136,7 @@ public:
 	{
 		for (size_t i = 0; i < groundArray.size(); ++i)
 		{
+			groundArray[i]->color = GRAY;
 			if (CheckCollisionRecs(groundCollider, groundArray[i]->groundCollider))
 			{
 				if (groundArray[i]->tag == "Ground")
@@ -146,7 +144,8 @@ public:
 					if (vel.y > 0.0f)
 					{
 						vel.y = groundArray[i]->vel.y;
-						pos.y = groundArray[i]->rect.y - size.y;
+						pos.y = groundArray[i]->rect.y - size.y + groundArray[i]->vel.y;
+						groundArray[i]->color = YELLOW;
 						return true;
 					}
 				}

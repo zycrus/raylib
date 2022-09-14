@@ -8,6 +8,7 @@ public:
 	Vector2 size;
 	const char* tag;
 	Color color;
+	Color colliderColor = LIME;
 
 	Rectangle rect;
 	Rectangle groundCollider;
@@ -31,6 +32,6 @@ public:
 	{
 		DrawRectangleRec(rect, color);
 
-		DrawRectangleLinesEx(groundCollider, 1.0f, LIME);
+		DrawRectangleLinesEx(groundCollider, 1.0f, colliderColor);
 	}
 };

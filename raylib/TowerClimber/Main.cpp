@@ -8,6 +8,7 @@ void Draw();
 void UpdateDrawFrame();
 void InitLevel();
 void GeneratePlatforms(int);
+void ReloadPlatform();
 
 // Initialize Instance Manager
 InstanceManager instances;
@@ -49,6 +50,7 @@ int main()
 		UpdateDrawFrame();
 	}
 
+	instances.Clear();
 	CloseWindow();
 	return 0;
 }
