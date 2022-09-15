@@ -24,7 +24,7 @@ public:
 		groundCollider = { pos.x + 0.01f, pos.y + size.y, size.x - 0.02f, 1.0f };
 	}
 
-	void CopyGroundArray(std::vector<Ground*> _groundArray)
+	void CopyGroundArray(std::vector<Ground*>& _groundArray)
 	{
 		groundArray = _groundArray;
 	}

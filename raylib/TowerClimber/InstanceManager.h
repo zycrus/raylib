@@ -3,6 +3,8 @@
 #include "Player.h"
 #include <vector>
 
+void RestartLevel();
+
 class InstanceManager {
 	std::vector<Ground*> groundArray;
 
@@ -26,16 +28,22 @@ public:
 
 	void ReloadPlatform(Ground* ground)
 	{
-		ground->pos.y = 0;
-		ground->size.y = 20;
 		ground->size.x = GetRandomValue(50, 150);
+		ground->size.y = 20;
 		ground->pos.x = (float)GetRandomValue(0, GetScreenWidth() - ground->size.x);
+		ground->pos.y = -20;
 	}
 
 	void Update()
 	{
 		player->Update();
 		player->Draw();
+
+		if (player->pos.y > GetScreenHeight())
+		{
+			RestartLevel();
+		}
+
 		for (size_t i = 0; i < groundArray.size(); ++i)
 		{
 			groundArray[i]->Update();
