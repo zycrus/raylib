@@ -7,8 +7,8 @@ void Update();
 void Draw();
 void UpdateDrawFrame();
 void InitLevel();
+void RestartLevel();
 void GeneratePlatforms(int);
-void ReloadPlatform();
 
 // Initialize Instance Manager
 InstanceManager instances;
@@ -24,6 +24,12 @@ void InitLevel() {
 	{
 		GeneratePlatforms(ypos);
 	}
+}
+
+void RestartLevel()
+{
+	instances.Clear();
+	InitLevel();
 }
 
 void GeneratePlatforms(int ypos)

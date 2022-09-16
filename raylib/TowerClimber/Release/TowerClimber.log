@@ -1,0 +1,9 @@
+﻿  Main.cpp
+D:\Julius\Programming\C++\raylib\raylib\TowerClimber\InstanceManager.h(31,34): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Julius\Programming\C++\raylib\raylib\TowerClimber\InstanceManager.h(33,61): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Generating code
+  93 of 130 functions (71.5%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  TowerClimber.vcxproj -> D:\Julius\Programming\C++\raylib\raylib\Release\TowerClimber.exe
