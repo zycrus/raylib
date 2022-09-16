@@ -26,7 +26,7 @@ public:
 
 	void ReloadPlatform(Ground* ground)
 	{
-		ground->pos.y = 0;
+		ground->pos.y = -20;
 		ground->size.y = 20;
 		ground->size.x = GetRandomValue(50, 150);
 		ground->pos.x = (float)GetRandomValue(0, GetScreenWidth() - ground->size.x);
