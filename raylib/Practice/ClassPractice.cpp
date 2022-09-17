@@ -7,9 +7,69 @@
 #define SCREEN_HEIGHT 300
 #define FRAME_SPEED 10
 
+class Animation
+{
+private:
+	std::vector<Texture2D> frames;
+	std::vector<int> frameDelay;
+	int frameTimer;
+	bool isLooping;
+
+public:
+	int currentFrame;
+	Animation() :
+		currentFrame(0), isLooping(false), frameTimer(0)
+	{}
+
+	void UpdateFrames()
+	{
+		// Check if frameTimer < frameDelay[currentFrame]
+		if (frameTimer < frameDelay[currentFrame])
+		{
+			frameTimer++;
+		}
+		else
+		{
+			frameTimer = 0;
+			// Check if currentFrame < frames.size()
+			if (currentFrame < (int)frames.size() - 1)
+			{
+				currentFrame++;
+			}
+			else currentFrame = 0;
+		}
+	}
+
+	// Add a frame to the animation
+	void AddFrame(const char* imgDest, int delay)
+	{
+		frames.push_back(LoadTexture(imgDest));
+		frameDelay.push_back(delay);
+	}
+
+	int GetAnimLength()
+	{
+		return (int)frames.size();
+	}
+
+	Texture2D GetCurrentFrame()
+	{
+		return frames[currentFrame];
+	}
+
+	// Unload images
+	void UnloadImages()
+	{
+		for (size_t i = 0; i < frames.size(); i++)
+		{
+			UnloadTexture(frames[i]);
+		}
+	}
+};
+
 class Sprite {
 public:
-	Texture2D image;
+	Texture2D img;
 
 	int frameWidth;
 	int frameHeight;
@@ -23,78 +83,47 @@ public:
 	// Origin relative to destination rectangle
 	Vector2 origin;
 
+	// Animation Class Test
+	Animation anim;
+
 	const char* keyAction = "";
 	const char* keyText = "";
 
 	// Sprite Rotation
 	int rotation = 0;
 
-	// Animation
-	int animFrame = 0;
-	int currentFrame = 2;
-
-	int framesCounter = 0;
-	int framesSpeed = 4;
-
 	// Initialize Sprite
 	Sprite(const char* dest) : 
-		image(LoadTexture(dest)),
-		frameWidth(image.width/4),
-		frameHeight(image.height/4),
+		img(LoadTexture(dest)),
+		frameWidth(img.width),
+		frameHeight(img.height),
 		sourceRect({ 0.0f, 0.0f, (float)frameWidth, (float)frameHeight }),
 		destRect({ SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, frameWidth * 4.0f, frameHeight * 4.0f }),
 		origin({ (float)frameWidth * 2.0f, (float)frameHeight * 2.0f })
-	{	}
+	{	
+		// Add the Animation Frames
+		anim.AddFrame("Sprites/frames/30.png", 15);
+		anim.AddFrame("Sprites/frames/31.png", 10);
+	}
 
 	void Update()
 	{
-		//rotation++;
-		Animate();
-
-		if (IsKeyPressed(KEY_S))
+		anim.UpdateFrames();
+		// Check if animation length is grater than zero
+		if (anim.GetAnimLength() > 0)
 		{
-			keyAction = "Pressed: ";
-			keyText = "S";
-			sourceRect.y = (float)frameHeight * 0;
-			animFrame = 2;
-			currentFrame = animFrame;
-		}
-		if (IsKeyPressed(KEY_W))
-		{
-			keyAction = "Pressed: ";
-			keyText = "W";
-			sourceRect.y = (float)frameHeight * 1;
-			animFrame = 2;
-			currentFrame = animFrame;
-		}
-		if (IsKeyPressed(KEY_A))
-		{
-			keyAction = "Pressed: ";
-			keyText = "A";
-			sourceRect.y = (float)frameHeight * 2;
-			animFrame = 2;
-			currentFrame = animFrame;
-		}
-		if (IsKeyPressed(KEY_D))
-		{
-			keyAction = "Pressed: ";
-			keyText = "D";
-			sourceRect.y = (float)frameHeight * 3;
-			animFrame = 2;
-			currentFrame = animFrame;
-		}
-		if (IsKeyReleased(KEY_S) || IsKeyReleased(KEY_W) || IsKeyReleased(KEY_A) || IsKeyReleased(KEY_D))
-		{
-			keyAction = "Released: ";
-			animFrame = 0;
-			currentFrame = animFrame;
-			framesSpeed = 3;
+			img = anim.GetCurrentFrame();
+			frameWidth = img.width;
+			frameHeight = img.height;
+			sourceRect = { 0.0f, 0.0f, (float)frameWidth, (float)frameHeight };
+			destRect = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, frameWidth * 4.0f, frameHeight * 4.0f };
+			origin = { (float)frameWidth * 2.0f, (float)frameHeight * 2.0f };
 		}
 	}
 
 	void Draw()
 	{
-		DrawTexturePro(image, sourceRect, destRect, origin, (float)rotation, WHITE);
+		DrawTexturePro(img, sourceRect, destRect, origin, (float)rotation, WHITE);
 		int keyActWidth = MeasureText(keyAction, 10);
 		int keyTextWidth = MeasureText(keyText, 10);
 		DrawText(keyAction, GetScreenWidth() - keyActWidth - keyTextWidth - 10, 10, 10, SKYBLUE);
@@ -103,22 +132,8 @@ public:
 
 	void UnloadImages()
 	{
-		UnloadTexture(image);
-	}
-
-	void Animate()
-	{
-		framesCounter++;
-
-		if (framesCounter >= (60 / framesSpeed))
-		{
-			framesCounter = 0;
-			currentFrame++;
-
-			if (currentFrame > animFrame + 1) currentFrame = animFrame;
-
-			sourceRect.x = (float)currentFrame * (float)frameWidth;
-		}
+		UnloadTexture(img);
+		anim.UnloadImages();
 	}
 };
 
@@ -127,7 +142,7 @@ int main()
 {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Loading Test");
 	SetTargetFPS(60);
-	Sprite character = Sprite("Sprites/Basic Charakter Spritesheet.png");
+	Sprite character = Sprite("Sprites/frames/front_idle_0.png");
 	
 	while (!WindowShouldClose())
 	{
@@ -140,7 +155,7 @@ int main()
 		ClearBackground(RAYWHITE);
 
 		character.Draw();
-		DrawText(TextFormat("Frame: %i", character.currentFrame), 10, 10, 10, LIME);
+		DrawText(TextFormat("Frame: %i", character.anim.GetAnimLength()), 10, 10, 10, LIME);
 
 
 		const char* credits = "https://cupnooble.itch.io";
